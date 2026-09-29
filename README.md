@@ -8,7 +8,7 @@ I kept seeing the same requirements in job postings — Active Directory, Group 
 
 ## Environment
 
-| Role - Name | OS | Address |
+| Role | Name | OS | Address |
 |---|---|---|---|
 | Hyper-V host | on my own computer | Windows 11 Pro, 32 GB RAM | — |
 | Domain controller | DC01 | Windows Server 2022 Standard (Desktop Experience) | 192.168.10.10 static |
