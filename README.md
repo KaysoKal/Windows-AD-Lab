@@ -28,6 +28,7 @@ Lab.local
 ├── LAB-Groups
 ├── LAB-ServiceAccounts
 └── LAB-Disabled
+
 Users and computers live in a separate ou on purpose.  
 
 **Active Directory**
