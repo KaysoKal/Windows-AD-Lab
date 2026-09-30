@@ -1,27 +1,24 @@
 #Verify
 
-```powershell
-Get-ADOrganizationalUnit -Filter * | Select-Object Name,DistinguishedName
-```
-
-<!-- ![OU tree in ADUC](images/ou-structure.png) -->
-
-### What matters here
-
-**An OU is a container you can point policy at.** The built-in `Users` and `Computers` containers exist by default but **can't have GPOs linked to them** — that's the entire reason for building your own.
-
-**Users and computers separated on purpose.** Every GPO has a Computer half and a User half. Separate OUs means each GPO targets one object type cleanly.
-
-**`-Filter` is required on AD cmdlets.** Leaving it off errors rather than returning everything.
-
-**DistinguishedName reads right to left:**
-
-```
-OU=Warehouse,OU=LAB-Users,DC=lab,DC=local
-```
-
-`CN` = leaf object (user/group/computer) · `OU` = container · `DC` = domain component.
-
-Scripts build these strings from data, so the format matters.
-
 ---
+**Telling them apart:**
+
+```powershell
+# Your OUs — the built-in containers won't appear here
+Get-ADOrganizationalUnit -Filter * | Select-Object Name,DistinguishedName
+
+# The built-in containers
+Get-ADObject -Filter 'ObjectClass -eq "container"' -SearchScope OneLevel -SearchBase "DC=lab,DC=local" |
+    Select-Object Name,DistinguishedName
+```
+
+The quick tell is the prefix: containers start with `CN=` (`CN=Users,DC=lab,DC=local`), OUs start with `OU=`.
+
+**Finding objects stuck in a default container:**
+
+```powershell
+Get-ADComputer -Filter * -SearchBase "CN=Computers,DC=lab,DC=local" | Select-Object Name
+Get-ADUser -Filter * -SearchBase "CN=Users,DC=lab,DC=local" | Select-Object Name
+```
+
+Anything the first command returns is a machine no GPO can reach — the first check when "new PCs aren't getting policy."
