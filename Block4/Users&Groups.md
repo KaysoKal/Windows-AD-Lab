@@ -56,7 +56,7 @@ nltest /dsgetdc:lab.local
 Get-ADOrganizationalUnit -Filter * | Select-Object Name
 Get-DhcpServerInDC
 Get-DhcpServerv4Scope
-Get-DhcpServerv4OptionValue -ScopeId 192.168.10.0
-Get-DhcpServerv4Reservation -ScopeId 192.168.10.0
+Get-DhcpServerv4OptionValue -ScopeId 192.168.x.x
+Get-DhcpServerv4Reservation -ScopeId 192.168.x.x
 Get-ADUser -Filter * -SearchBase "OU=LAB-Users,DC=lab,DC=local" | Measure-Object
 ```
