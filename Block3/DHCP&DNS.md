@@ -11,7 +11,7 @@ Install-WindowsFeature -Name DHCP -IncludeManagementTools
 ### 2. Authorize in AD
 
 ```powershell
-Add-DhcpServerInDC -DnsName DC01.lab.local -IPAddress 192.168.10.10
+Add-DhcpServerInDC -DnsName DC01.lab.local -IPAddress 192.168.x.x
 Get-DhcpServerInDC
 ```
 
@@ -24,7 +24,7 @@ That's real security — but it's **voluntary compliance**. It stops an unauthor
 ### 3. Create the scope
 
 ```powershell
-Add-DhcpServerv4Scope -Name "LAB-Scope" -StartRange 192.168.10.100 -EndRange 192.168.10.200 -SubnetMask 255.255.255.0 -State Active
+Add-DhcpServerv4Scope -Name "LAB-Scope" -StartRange 192.168.x.x -EndRange 192.168.x.x -SubnetMask 255.255.255.0 -State Active
 Get-DhcpServerv4Scope
 ```
 
@@ -33,8 +33,8 @@ Starts at `.100`, leaving `.1–.99` for infrastructure that needs predictable a
 ### 4. Set the options
 
 ```powershell
-Set-DhcpServerv4OptionValue -ScopeId 192.168.10.0 -DnsServer 192.168.10.10 -DnsDomain lab.local
-Get-DhcpServerv4OptionValue -ScopeId 192.168.10.0
+Set-DhcpServerv4OptionValue -ScopeId 192.168.x.x -DnsServer 192.168.x.x -DnsDomain lab.local
+Get-DhcpServerv4OptionValue -ScopeId 192.x.x
 ```
 
 `-DnsServer` is **option 006** — every client gets told to resolve through DC01. Non-negotiable: a client pointed elsewhere can't find the domain.
@@ -56,8 +56,8 @@ Get-VMNetworkAdapter -VMName WS01 | Select-Object MacAddress
 Then on DC01:
 
 ```powershell
-Add-DhcpServerv4Reservation -ScopeId 192.168.10.0 -IPAddress 192.168.10.150 -ClientId "00155D01D409" -Description "WS01"
-Get-DhcpServerv4Reservation -ScopeId 192.168.10.0
+Add-DhcpServerv4Reservation -ScopeId 192.168.x.x -IPAddress 192.168.x.x -ClientId "00155D01D409" -Description "WS01"
+Get-DhcpServerv4Reservation -ScopeId 192.168.x.x
 ```
 
 Ties a MAC to a fixed IP while still leasing through DHCP. The address must fall **inside** the scope range — a reservation is a slice of the pool, not an exception to it.
@@ -70,7 +70,7 @@ Always set `-Description`. Twenty MACs with no labels is unusable in six months.
 
 ### 6. Create DNS records by hand
 
-**A record** — right-click zone → New Host (A). `fileserver` → `192.168.10.50`. Uncheck the PTR box; no reverse zone exists.
+**A record** — right-click zone → New Host (A). `fileserver` → `192.168.x.x`. Uncheck the PTR box; no reverse zone exists.
 
 **CNAME** — right-click zone → New Alias. Alias name `file` (short), target `fileserver.lab.local` (**full FQDN**).
 
